@@ -1,0 +1,160 @@
+### Currently Implemented Endpoints:
+#### Get-Requests:
+- [x] /authz Authorization
+- [x] /ca Certificate Authority
+- [x] /certificates Certificates + Client Certificates
+- [ ] /cluster
+- [ ] /contentstream
+- [ ] /dashboards
+- [ ] /datanodes
+- [ ] /datanode
+- [ ] /api-docs API-Documentation
+- [ ] /enterprise
+- [ ] /entitylists
+- [ ] /entity_scopes
+- [ ] /entity_suggestions
+- [ ] /events
+- [ ] /system/inputs/{inputId}/extractors Extractors
+- [ ] /favorites
+- [ ] /views/fields FieldTypes
+- [ ] /system/indexer Indexer
+- [ ] /search/universal/absolute Legacy Message Search
+- [ ] /messages
+- [ ] /migration
+- [ ] /system/pipelines Pipelines
+- [ ] /plugins
+- [ ] /remote-reindex-migration
+- [ ] /roles
+- [ ] /views/search Search
+- [ ] /search Search Options (Decorators, Export, Functions etc.)
+- [ ] /views/searchjobs Searchjobs
+- [ ] /sidecars
+- [ ] /sidecar
+- [ ] /startpage
+- [ ] /system/inputs/{inputId}/staticfields Staticfields
+- [ ] /streams
+- [ ] /system Main System endpoints
+- [ ] /telemetry
+- [ ] /token_usage
+- [x] /users
+- [x] /views Main Views Endpoints
+
+#### Post-Requests:
+- [ ] /authz Authorization
+- [ ] /ca Certificate Authority
+- [ ] /certificates Certificates + Client Certificates
+- [ ] /cluster
+- [ ] /contentstream
+- [ ] /dashboards
+- [ ] /datanodes
+- [ ] /datanode
+- [ ] /api-docs API-Documentation
+- [ ] /enterprise
+- [ ] /entitylists
+- [ ] /entity_scopes
+- [ ] /entity_suggestions
+- [ ] /events
+- [ ] /system/inputs/{inputId}/extractors Extractors
+- [ ] /favorites
+- [ ] /views/fields FieldTypes
+- [ ] /system/indexer Indexer
+- [ ] /search/universal/absolute Legacy Message Search
+- [ ] /messages
+- [ ] /migration
+- [ ] /system/pipelines Pipelines
+- [ ] /plugins
+- [ ] /remote-reindex-migration
+- [ ] /roles
+- [ ] /views/search Search
+- [ ] /search Search Options (Decorators, Export, Functions etc.)
+- [ ] /views/searchjobs Searchjobs
+- [ ] /sidecars
+- [ ] /sidecar
+- [ ] /startpage
+- [ ] /system/inputs/{inputId}/staticfields Staticfields
+- [ ] /streams
+- [ ] /system Main System endpoints
+- [ ] /telemetry
+- [ ] /token_usage
+- [ ] /users
+- [ ] /views Main Views Endpoints
+
+#### Delete-Requests:
+- [ ] /authz Authorization
+- [ ] /ca Certificate Authority
+- [ ] /certificates Certificates + Client Certificates
+- [ ] /cluster
+- [ ] /contentstream
+- [ ] /dashboards
+- [ ] /datanodes
+- [ ] /datanode
+- [ ] /api-docs API-Documentation
+- [ ] /enterprise
+- [ ] /entitylists
+- [ ] /entity_scopes
+- [ ] /entity_suggestions
+- [ ] /events
+- [ ] /system/inputs/{inputId}/extractors Extractors
+- [ ] /favorites
+- [ ] /views/fields FieldTypes
+- [ ] /system/indexer Indexer
+- [ ] /search/universal/absolute Legacy Message Search
+- [ ] /messages
+- [ ] /migration
+- [ ] /system/pipelines Pipelines
+- [ ] /plugins
+- [ ] /remote-reindex-migration
+- [ ] /roles
+- [ ] /views/search Search
+- [ ] /search Search Options (Decorators, Export, Functions etc.)
+- [ ] /views/searchjobs Searchjobs
+- [ ] /sidecars
+- [ ] /sidecar
+- [ ] /startpage
+- [ ] /system/inputs/{inputId}/staticfields Staticfields
+- [ ] /streams
+- [ ] /system Main System endpoints
+- [ ] /telemetry
+- [ ] /token_usage
+- [ ] /users
+- [ ] /views Main Views Endpoints
+
+#### Put-Requests:
+- [ ] /authz Authorization
+- [ ] /ca Certificate Authority
+- [ ] /certificates Certificates + Client Certificates
+- [ ] /cluster
+- [ ] /contentstream
+- [ ] /dashboards
+- [ ] /datanodes
+- [ ] /datanode
+- [ ] /api-docs API-Documentation
+- [ ] /enterprise
+- [ ] /entitylists
+- [ ] /entity_scopes
+- [ ] /entity_suggestions
+- [ ] /events
+- [ ] /system/inputs/{inputId}/extractors Extractors
+- [ ] /favorites
+- [ ] /views/fields FieldTypes
+- [ ] /system/indexer Indexer
+- [ ] /search/universal/absolute Legacy Message Search
+- [ ] /messages
+- [ ] /migration
+- [ ] /system/pipelines Pipelines
+- [ ] /plugins
+- [ ] /remote-reindex-migration
+- [ ] /roles
+- [ ] /views/search Search
+- [ ] /search Search Options (Decorators, Export, Functions etc.)
+- [ ] /views/searchjobs Searchjobs
+- [ ] /sidecars
+- [ ] /sidecar
+- [ ] /startpage
+- [ ] /system/inputs/{inputId}/staticfields Staticfields
+- [ ] /streams
+- [ ] /system Main System endpoints
+- [ ] /telemetry
+- [ ] /token_usage
+- [ ] /users
+- [ ] /views Main Views Endpoints

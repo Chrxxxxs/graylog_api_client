@@ -1,0 +1,2 @@
+class GraylogApiException(Exception):
+    pass
