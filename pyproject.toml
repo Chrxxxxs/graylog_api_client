@@ -1,10 +1,11 @@
 [project]
 name = "graylog-api-client"
-version = "0.1.0"
-description = ""
+version = "0.1.1"
+description = "A Python wrapper for the Graylog REST API"
 authors = [
     {name = "Chrxxxxs",email = "134285960+Chrxxxxs@users.noreply.github.com"}
 ]
+license = "MIT"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [

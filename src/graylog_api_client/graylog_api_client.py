@@ -1,5 +1,6 @@
 import logging
-from typing import Union, Dict
+from typing import List, Union, Dict
+
 from src.graylog_api_client.rest_adapter import RestAdapter
 from src.graylog_api_client.data_structures import GraylogApiResult
 
@@ -90,6 +91,21 @@ class GraylogAPI:
     # /telemetry
     # /token_usage
     # /users
+    def create_user(self, username: str, first_name: str, last_name: str, email: str, password: str, permissions: List[str], data: Dict = None) -> GraylogApiResult:
+        user_data = {
+            "username": username,
+            "first_name": first_name,
+            "last_name": last_name,
+            "email": email,
+            "password": password,
+        }
+        if permissions:
+            user_data["permissions"] = permissions
+        if data:
+            user_data.update(data)
+        result = self._rest_adapter.post("users", data=user_data)
+        return result
+
     def get_users(self, parameters: Dict = None) -> GraylogApiResult:
         result = self._rest_adapter.get("users", parameters)
         return result
@@ -108,6 +124,20 @@ class GraylogAPI:
 
     def get_user_tokens_by_id(self, user_id: str) -> GraylogApiResult:
         result = self._rest_adapter.get(f"users/{user_id}/tokens")
+        return result
+
+    def delete_user_by_id(self, user_id: str) -> GraylogApiResult:
+        result = self._rest_adapter.delete(f"users/id/{user_id}")
+        return result
+
+    def delete_user_by_username(self, username: str) -> GraylogApiResult:
+        result = self._rest_adapter.delete(f"users/{username}")
+        return result
+
+    def change_user_status(self, user_id: str, status: str) -> GraylogApiResult:
+        if status not in ["enabled", "disabled", "deleted"]:
+            raise ValueError(f"Status must be either 'enabled', 'disabled' or 'deleted' but was: {status}")
+        result = self._rest_adapter.put(f"users/{user_id}/status/{status}")
         return result
 
     # /views Main Views Endpoints

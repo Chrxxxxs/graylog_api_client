@@ -20,7 +20,7 @@ class RestAdapter:
         self._api_key = api_key
         self._ssl_verify = ssl_verify
         self._session = requests.Session()
-        self._session.headers.update({"Accept": "application/json"})
+        self._session.headers.update({"Accept": "application/json", "X-Requested-By": "python-graylog-api-client"})
         self._session.auth = (self._api_key, "token")  # Graylog uses the format Basic Auth: "<API-token>:token"
         if not ssl_verify:
             requests.packages.urllib3.disable_warnings()
@@ -45,7 +45,10 @@ class RestAdapter:
             self._logger.error(msg=str(e))
             raise GraylogApiException("Invalid API Response") from e
         try:
-            data = response.json()
+            if response.content != b'':
+                data_out = response.json()
+            else:
+                data_out = None
         except (ValueError, requests.exceptions.JSONDecodeError) as e:
             self._logger.error(msg=log_line_post.format(False, None, e))
             raise GraylogApiException("Bad JSON in response") from e
@@ -53,7 +56,7 @@ class RestAdapter:
         log_line = log_line_post.format(is_success, response.status_code, response.reason)
         if is_success:
             self._logger.debug(msg=log_line)
-            return GraylogApiResult(status_code=response.status_code, message=response.reason, data=data)
+            return GraylogApiResult(status_code=response.status_code, message=response.reason, data=data_out)
         self._logger.error(msg=log_line)
         raise GraylogApiException(f"{response.status_code}: {response.reason}")
 

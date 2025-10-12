@@ -7,14 +7,10 @@ from src.graylog_api_client.graylog_api_client import GraylogAPI
 class TestGraylogApiClient(TestCase):
     def setUp(self):
         self.graylog_api = GraylogAPI("", "")
-        self.graylog_api._rest_adapter.get = mock.Mock(spec=["endpoint", "parameters"],
-                                                        return_value=GraylogApiResult(200))
-        self.graylog_api._rest_adapter.post = mock.Mock(spec=["endpoint", "parameters", "data"],
-                                                        return_value=GraylogApiResult(200))
-        self.graylog_api._rest_adapter.delete = mock.Mock(spec=["endpoint", "parameters", "data"],
-                                                        return_value=GraylogApiResult(200))
-        self.graylog_api._rest_adapter.put = mock.Mock(spec=["endpoint", "parameters", "data"],
-                                                        return_value=GraylogApiResult(200))
+        self.graylog_api._rest_adapter.get = mock.Mock(spec=["endpoint", "parameters"], return_value=GraylogApiResult(200))
+        self.graylog_api._rest_adapter.post = mock.Mock(spec=["endpoint", "parameters", "data"], return_value=GraylogApiResult(200))
+        self.graylog_api._rest_adapter.delete = mock.Mock(spec=["endpoint", "parameters", "data"], return_value=GraylogApiResult(200))
+        self.graylog_api._rest_adapter.put = mock.Mock(spec=["endpoint", "parameters", "data"], return_value=GraylogApiResult(200))
 
     # The endpoints grouped like they are in the api-browser
     # /authz Authorization
@@ -119,6 +115,12 @@ class TestGraylogApiClient(TestCase):
     # /telemetry
     # /token_usage
     # /users
+    def test_create_user(self):
+        dummy_data = {"username": "foo", "first_name": "bar", "last_name": "baz", "email": "foo@bar.baz", "password": "secret", "permissions": ["read:foo"]}
+        user = self.graylog_api.create_user(**dummy_data)
+        self.assertIsInstance(user, GraylogApiResult)
+        self.graylog_api._rest_adapter.post.assert_called_once_with("users", data={**dummy_data})
+
     def test_get_users(self):
         users = self.graylog_api.get_users()
         self.assertIsInstance(users, GraylogApiResult)
@@ -146,6 +148,32 @@ class TestGraylogApiClient(TestCase):
         user = self.graylog_api.get_user_tokens_by_id(dummy_id)
         self.assertIsInstance(user, GraylogApiResult)
         self.graylog_api._rest_adapter.get.assert_called_once_with(f"users/{dummy_id}/tokens")
+
+    def test_delete_user_by_id(self):
+        dummy_id = "foo"
+        result = self.graylog_api.delete_user_by_id(dummy_id)
+        self.assertIsInstance(result, GraylogApiResult)
+        self.graylog_api._rest_adapter.delete.assert_called_once_with(f"users/id/{dummy_id}")
+
+    def test_delete_user_by_username(self):
+        dummy_user = "foo"
+        result = self.graylog_api.delete_user_by_username(dummy_user)
+        self.assertIsInstance(result, GraylogApiResult)
+        self.graylog_api._rest_adapter.delete.assert_called_once_with(f"users/{dummy_user}")
+
+    def test_change_user_status_valid(self):
+        dummy_id = "foo"
+        for status in ["enabled", "disabled", "deleted"]:
+            with self.subTest(status=status):
+                result = self.graylog_api.change_user_status(dummy_id, status)
+                self.assertIsInstance(result, GraylogApiResult)
+                self.graylog_api._rest_adapter.put.assert_called_once_with(f"users/{dummy_id}/status/{status}")
+                self.graylog_api._rest_adapter.put.reset_mock()
+
+    def test_change_user_status_invalid(self):
+        dummy_id = "foo"
+        with self.assertRaises(ValueError):
+            self.graylog_api.change_user_status(dummy_id, "invalid_status")
 
     # /views Main Views Endpoints
     def test_get_views(self):
