@@ -22,9 +22,10 @@
 - [ ] /messages
 - [ ] /migration
 - [ ] /system/pipelines Pipelines
-- [ ] /plugins
+- [ ] /plugins Way more in Enterprise than open-core
 - [ ] /remote-reindex-migration
 - [ ] /roles
+- [ ] /saml Enterprise only
 - [ ] /views/search Search
 - [ ] /search Search Options (Decorators, Export, Functions etc.)
 - [ ] /views/searchjobs Searchjobs

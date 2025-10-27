@@ -1,12 +1,19 @@
 import logging
 from typing import List, Union, Dict
 
-from src.graylog_api_client.rest_adapter import RestAdapter
-from src.graylog_api_client.data_structures import GraylogApiResult
+from .rest_adapter import RestAdapter
+from .data_structures import GraylogApiResult
 
 
 class GraylogAPI:
     def __init__(self, host: str, api_key: str, ssl_verify: Union[str, bool] = True, logger: logging.Logger = None):
+        """GraylogAPI client
+
+        :param host: The hostname of the Graylog API endpoint plus the protocol. Example: https://graylog.com/api
+        :param api_key: An API Key to authenticate with Graylog
+        :param ssl_verify: Enables or Disables TLS Certificate verification. For a custom certificate, this value must a path pointing to the certificate, defaults to True
+        :param logger: The logger being used by the Adapter, will use a new one if none is given, defaults to None
+        """
         self._rest_adapter = RestAdapter(host=host, api_key=api_key, ssl_verify=ssl_verify, logger=logger)
 
     # The endpoints grouped like they are in the api-browser

@@ -2,8 +2,8 @@ import requests
 import logging
 from typing import Dict, Union
 
-from src.graylog_api_client.exceptions import GraylogApiException
-from src.graylog_api_client.data_structures import GraylogApiResult
+from .exceptions import GraylogApiException
+from .data_structures import GraylogApiResult
 
 
 class RestAdapter:
