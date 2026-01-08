@@ -96,6 +96,30 @@ class TestGraylogApiClient(TestCase):
     # /migration
     # /system/pipelines Pipelines
     # /plugins
+    # /plugins/reports
+    def test_get_all_reports(self):
+        all_reports = self.graylog_api.get_all_reports()
+        self.assertIsInstance(all_reports, GraylogApiResult)
+        self.graylog_api._rest_adapter.get.assert_called_once_with("plugins/org.graylog.plugins.report/reports")
+
+    def test_get_report_by_id(self):
+        dummy_id = "foo"
+        report = self.graylog_api.get_report_by_id(dummy_id)
+        self.assertIsInstance(report, GraylogApiResult)
+        self.graylog_api._rest_adapter.get.assert_called_once_with(f"plugins/org.graylog.plugins.report/reports/{dummy_id}")
+
+    def test_send_report_via_email(self):
+        dummy_id = "foo"
+        report = self.graylog_api.get_report_by_id(dummy_id)
+        self.assertIsInstance(report, GraylogApiResult)
+        self.graylog_api._rest_adapter.get.assert_called_once_with(f"plugins/org.graylog.plugins.report/reports/{dummy_id}/email")
+
+    def test_generate_report(self):
+        dummy_id = "foo"
+        report = self.graylog_api.get_report_by_id(dummy_id)
+        self.assertIsInstance(report, GraylogApiResult)
+        self.graylog_api._rest_adapter.get.assert_called_once_with(f"plugins/org.graylog.plugins.report/reports/{dummy_id}/generate")
+
     # /remote-reindex-migration
     # /roles
     # /views/search Search

@@ -80,6 +80,23 @@ class GraylogAPI:
     # /migration
     # /system/pipelines Pipelines
     # /plugins
+    # /plugins/reports
+    def get_all_reports(self) -> GraylogApiResult:
+        result = self._rest_adapter.get("plugins/org.graylog.plugins.report/reports")
+        return result
+
+    def get_report_by_id(self, report_id: str) -> GraylogApiResult:
+        result = self._rest_adapter.get(f"plugins/org.graylog.plugins.report/reports/{report_id}")
+        return result
+
+    def send_report_via_email(self, report_id) -> GraylogApiResult:
+        result = self._rest_adapter.get(f"plugins/org.graylog.plugins.report/reports/{report_id}/email")
+        return result
+
+    def generate_report(self, report_id) -> GraylogApiResult:
+        result = self._rest_adapter.get(f"plugins/org.graylog.plugins.report/reports/{report_id}/generate")
+        return result
+
     # /remote-reindex-migration
     # /roles
     # /views/search Search
