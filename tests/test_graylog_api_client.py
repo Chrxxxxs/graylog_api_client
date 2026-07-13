@@ -100,6 +100,45 @@ class TestGraylogApiClient(TestCase):
     # /roles
     # /views/search Search
     # /search Search Options (Decorators, Export, Functions etc.)
+    def test_post_search_query(self):
+        dummy_query = "foo"
+        dummy_start = 0
+        dummy_timerange = {"type": "relative", "range": 300}
+        dummy_streams = ["stream1", "stream2"]
+        dummy_stream_categories = ["category1", "category2"]
+        dummy_sort = "timestamp"
+        dummy_sort_order = "Ascending"
+        dummy_fields = ["field1", "field2"]
+        dummy_size = 100
+
+        result = self.graylog_api.post_search_query(
+            query=dummy_query,
+            start=dummy_start,
+            timerange=dummy_timerange,
+            streams=dummy_streams,
+            stream_categories=dummy_stream_categories,
+            sort=dummy_sort,
+            sort_order=dummy_sort_order,
+            fields=dummy_fields,
+            size=dummy_size
+        )
+
+        self.assertIsInstance(result, GraylogApiResult)
+        self.graylog_api._rest_adapter.post.assert_called_once_with(
+            "search/messages",
+            data={
+                "query": dummy_query,
+                "from": str(dummy_start),
+                "timerange": dummy_timerange,
+                "streams": dummy_streams,
+                "stream_categories": dummy_stream_categories,
+                "sort": dummy_sort,
+                "sort_order": dummy_sort_order,
+                "fields": dummy_fields,
+                "size": str(dummy_size),
+            }
+        )
+
     # /views/searchjobs Searchjobs
     # /sidecars
     # /sidecar

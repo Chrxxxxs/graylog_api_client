@@ -1,5 +1,5 @@
 import logging
-from typing import List, Union, Dict
+from typing import List, Literal, Union, Dict
 
 from .rest_adapter import RestAdapter
 from .data_structures import GraylogApiResult
@@ -84,6 +84,24 @@ class GraylogAPI:
     # /roles
     # /views/search Search
     # /search Search Options (Decorators, Export, Functions etc.)
+    def post_search_query(self, query: str, start: int, timerange: dict, streams: list[str], stream_categories: list[str] = None,\
+                          sort: str = None, sort_order: Literal["Ascending", "Descending"] = None,\
+                          fields: list[str] = None, size: int = 50) -> GraylogApiResult:
+        """start replaces the "from" parameter in the API"""
+        data = {
+            "query": query,
+            "from": str(start),
+            "timerange": timerange,
+            "streams": streams,
+            "stream_categories": stream_categories,
+            "sort": sort,
+            "sort_order": sort_order,
+            "fields": fields,
+            "size": str(size),
+        }
+        result = self._rest_adapter.post("search/messages", data=data)
+        return result
+    
     # /views/searchjobs Searchjobs
     # /sidecars
     # /sidecar
