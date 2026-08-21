@@ -1,10 +1,16 @@
 name: Publish to PyPI
 
 on:
-  push:
-    tags:
-      - "v*"
-    branches: [main]
+  workflow_dispatch:
+    inputs:
+      confirm_release:
+        description: "Are you sure you want to publish this release?"
+        required: true
+        type: choice
+        options:
+          - "yes"
+          - "no"
+        default: "no"
 
 jobs:
   publish:
