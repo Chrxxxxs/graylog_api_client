@@ -96,6 +96,220 @@ class TestGraylogApiClient(TestCase):
     # /migration
     # /system/pipelines Pipelines
     # /plugins
+    # /plugins/SecurityApp/Assets
+    def test_securityapp_assets_share_rest_adapter(self):
+        security_app = self.graylog_api.plugins.SecurityApp
+
+        self.assertIs(security_app._rest_adapter, self.graylog_api._rest_adapter)
+        self.assertIs(security_app.Assets._rest_adapter, self.graylog_api._rest_adapter)
+
+    def test_get_securityapp_assets_defaults(self):
+        result = self.graylog_api.plugins.SecurityApp.Assets.get_assets()
+
+        self.assertIs(result, self.graylog_api._rest_adapter.get.return_value)
+        self.graylog_api._rest_adapter.get.assert_called_once_with(
+            "plugins/org.graylog.plugins.securityapp.asset/assets",
+            {
+                "sort": "name",
+                "page": 1,
+                "per_page": 15,
+                "query": "",
+                "filters": "",
+                "direction": "asc",
+            },
+        )
+
+    def test_get_securityapp_assets_custom_parameters(self):
+        parameters = {
+            "sort": "risk_score",
+            "page": 2,
+            "per_page": 30,
+            "query": "server",
+            "filters": "category:production",
+            "direction": "desc",
+        }
+
+        result = self.graylog_api.plugins.SecurityApp.Assets.get_assets(**parameters)
+
+        self.assertIs(result, self.graylog_api._rest_adapter.get.return_value)
+        self.graylog_api._rest_adapter.get.assert_called_once_with(
+            "plugins/org.graylog.plugins.securityapp.asset/assets", parameters
+        )
+
+    def test_create_securityapp_user_asset_defaults(self):
+        result = self.graylog_api.plugins.SecurityApp.Assets.create_user_asset(
+            name="Alice", usernames=["alice"]
+        )
+
+        self.assertIs(result, self.graylog_api._rest_adapter.post.return_value)
+        self.graylog_api._rest_adapter.post.assert_called_once_with(
+            "plugins/org.graylog.plugins.securityapp.asset/assets",
+            data={
+                "category": [],
+                "details": {
+                    "type": "user",
+                    "usernames": ["alice"],
+                    "user_ids": [],
+                    "email_addresses": [],
+                    "first_name": "",
+                    "last_name": "",
+                },
+                "name": "Alice",
+                "priority": 1,
+            },
+        )
+
+    def test_create_securityapp_user_asset_custom_parameters(self):
+        result = self.graylog_api.plugins.SecurityApp.Assets.create_user_asset(
+            name="Alice Example", usernames=["alice", "a.example"],
+            user_ids=["user-1"], email_addresses=["alice@example.com"],
+            first_name="Alice", last_name="Example", category=["staff"], priority=0,
+        )
+
+        self.assertIs(result, self.graylog_api._rest_adapter.post.return_value)
+        self.graylog_api._rest_adapter.post.assert_called_once_with(
+            "plugins/org.graylog.plugins.securityapp.asset/assets",
+            data={
+                "category": ["staff"],
+                "details": {
+                    "type": "user",
+                    "usernames": ["alice", "a.example"],
+                    "user_ids": ["user-1"],
+                    "email_addresses": ["alice@example.com"],
+                    "first_name": "Alice",
+                    "last_name": "Example",
+                },
+                "name": "Alice Example",
+                "priority": 0,
+            },
+        )
+
+    def test_create_securityapp_machine_asset_defaults(self):
+        result = self.graylog_api.plugins.SecurityApp.Assets.create_machine_asset(
+            name="Server", hostnames=["server.example.com"]
+        )
+
+        self.assertIs(result, self.graylog_api._rest_adapter.post.return_value)
+        self.graylog_api._rest_adapter.post.assert_called_once_with(
+            "plugins/org.graylog.plugins.securityapp.asset/assets",
+            data={
+                "category": [],
+                "details": {
+                    "type": "machine",
+                    "hostnames": ["server.example.com"],
+                    "ip_addresses": [],
+                    "mac_addresses": [],
+                    "custom_fields": {},
+                    "description": "",
+                    "geo_info": {},
+                    "owner": "",
+                },
+                "name": "Server",
+                "priority": 1,
+            },
+        )
+
+    def test_create_securityapp_machine_asset_custom_parameters(self):
+        result = self.graylog_api.plugins.SecurityApp.Assets.create_machine_asset(
+            name="Production server", hostnames=["server.example.com", "server"],
+            ip_addresses=["192.0.2.1"], mac_addresses=["00:11:22:33:44:55"],
+            category=["production"], custom_fields={"team": "operations"},
+            description="Application server", geo_info={"country": "DE"},
+            owner="operations", priority=0,
+        )
+
+        self.assertIs(result, self.graylog_api._rest_adapter.post.return_value)
+        self.graylog_api._rest_adapter.post.assert_called_once_with(
+            "plugins/org.graylog.plugins.securityapp.asset/assets",
+            data={
+                "category": ["production"],
+                "details": {
+                    "type": "machine",
+                    "hostnames": ["server.example.com", "server"],
+                    "ip_addresses": ["192.0.2.1"],
+                    "mac_addresses": ["00:11:22:33:44:55"],
+                    "custom_fields": {"team": "operations"},
+                    "description": "Application server",
+                    "geo_info": {"country": "DE"},
+                    "owner": "operations",
+                },
+                "name": "Production server",
+                "priority": 0,
+            },
+        )
+
+    def test_add_categories_to_multiple_securityapp_assets(self):
+        asset_ids = ["asset-1", "asset-2"]
+        categories = ["production", "servers"]
+
+        result = self.graylog_api.plugins.SecurityApp.Assets.add_categories_to_multiple_assets(
+            asset_ids=asset_ids, categories=categories
+        )
+
+        self.assertIs(result, self.graylog_api._rest_adapter.put.return_value)
+        self.graylog_api._rest_adapter.put.assert_called_once_with(
+            "plugins/org.graylog.plugins.securityapp.asset/assets/bulk/categories_add",
+            data={"asset_ids": asset_ids, "categories": categories},
+        )
+
+    def test_get_securityapp_asset_by_id_detailed(self):
+        asset_id = "asset-1"
+
+        result = self.graylog_api.plugins.SecurityApp.Assets.get_asset_by_id_detailed(asset_id)
+
+        self.assertIs(result, self.graylog_api._rest_adapter.get.return_value)
+        self.graylog_api._rest_adapter.get.assert_called_once_with(
+            f"plugins/org.graylog.plugins.securityapp.asset/assets/{asset_id}"
+        )
+
+    def test_edit_securityapp_asset_by_id(self):
+        asset_id = "asset-1"
+        updates = {"name": "updated-server", "priority": 0, "category": []}
+        existing_data = {
+            "id": asset_id,
+            "name": "original-server",
+            "priority": 1,
+            "category": ["production"],
+            "details": {"type": "machine", "hostnames": ["server.example.com"]},
+        }
+        expected_data = {**existing_data, **updates}
+        self.graylog_api._rest_adapter.get.return_value = GraylogApiResult(200, data=existing_data)
+
+        result = self.graylog_api.plugins.SecurityApp.Assets.edit_asset_by_id(asset_id, **updates)
+
+        self.assertIs(result, self.graylog_api._rest_adapter.put.return_value)
+        self.graylog_api._rest_adapter.get.assert_called_once_with(
+            f"plugins/org.graylog.plugins.securityapp.asset/assets/{asset_id}"
+        )
+        self.graylog_api._rest_adapter.put.assert_called_once_with(
+            f"plugins/org.graylog.plugins.securityapp.asset/assets/{asset_id}", data=expected_data
+        )
+
+    def test_edit_securityapp_asset_by_id_without_updates(self):
+        asset_id = "asset-1"
+        existing_data = {"id": asset_id, "name": "server", "priority": 1}
+        self.graylog_api._rest_adapter.get.return_value = GraylogApiResult(200, data=existing_data.copy())
+
+        result = self.graylog_api.plugins.SecurityApp.Assets.edit_asset_by_id(asset_id)
+
+        self.assertIs(result, self.graylog_api._rest_adapter.put.return_value)
+        self.graylog_api._rest_adapter.get.assert_called_once_with(
+            f"plugins/org.graylog.plugins.securityapp.asset/assets/{asset_id}"
+        )
+        self.graylog_api._rest_adapter.put.assert_called_once_with(
+            f"plugins/org.graylog.plugins.securityapp.asset/assets/{asset_id}", data=existing_data
+        )
+
+    def test_delete_securityapp_asset_by_id(self):
+        asset_id = "asset-1"
+
+        result = self.graylog_api.plugins.SecurityApp.Assets.delete_asset_by_id(asset_id)
+
+        self.assertIs(result, self.graylog_api._rest_adapter.delete.return_value)
+        self.graylog_api._rest_adapter.delete.assert_called_once_with(
+            f"plugins/org.graylog.plugins.securityapp.asset/assets/{asset_id}"
+        )
+
     # /remote-reindex-migration
     # /roles
     # /views/search Search

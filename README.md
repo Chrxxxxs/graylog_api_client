@@ -2,7 +2,7 @@
 As there are a lot of endpoints not all of them are implemented by now. I started by implementing the GET requests first.
 Also the API responses all follow very different schemas and an implementation of that into Python is probably not worth the effort which is why the responses from this API are so low-level.
 Feel free to add endpoints or schemas in PRs if you need them :)
-#### Last tested Graylog Version is: 6.3.4
+#### Last tested Graylog Major Version is: 7
 
 ### Example Usage
 

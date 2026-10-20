@@ -1,8 +1,11 @@
 import logging
+from datetime import datetime
 from typing import List, Literal, Union, Dict
 
 from .rest_adapter import RestAdapter
 from .data_structures import GraylogApiResult
+from .endpoints.authz import Endpoint_AUTH
+from .endpoints.plugins import Plugins
 
 
 class GraylogAPI:
@@ -15,27 +18,29 @@ class GraylogAPI:
         :param logger: The logger being used by the Adapter, will use a new one if none is given, defaults to None
         """
         self._rest_adapter = RestAdapter(host=host, api_key=api_key, ssl_verify=ssl_verify, logger=logger)
+        self.authz = Endpoint_AUTH(rest_adapter=self._rest_adapter)
+        self.plugins = Plugins(rest_adapter=self._rest_adapter)
 
     # The endpoints grouped like they are in the api-browser
     # /authz Authorization
     def get_auth_grants_overview(self) -> GraylogApiResult:
-        overview = self._rest_adapter.get("authz/grants-overview")
+        overview = self.authz.get_grants_overview()
         return overview
 
     def get_auth_roles(self, parameters: Dict = None) -> GraylogApiResult:
-        roles = self._rest_adapter.get("authz/roles", parameters)
+        roles = self.authz.get_roles(parameters)
         return roles
 
     def get_auth_roles_of_user(self, username: str, parameters: Dict = None) -> GraylogApiResult:
-        roles = self._rest_adapter.get(f"authz/roles/user/{username}", parameters)
+        roles = self.authz.get_roles_of_user(username, parameters)
         return roles
 
     def get_auth_role_by_id(self, role_id: str) -> GraylogApiResult:
-        roles = self._rest_adapter.get(f"authz/roles/{role_id}")
+        roles = self.authz.get_role_by_id(role_id)
         return roles
 
     def get_auth_assignees_of_role(self, role_id: str, parameters: Dict = None) -> GraylogApiResult:
-        assignees = self._rest_adapter.get(f"authz/roles/{role_id}/assignees", parameters)
+        assignees = self.authz.get_assignees_of_role(role_id, parameters)
         return assignees
 
     # /ca

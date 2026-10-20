@@ -37,7 +37,7 @@ class RestAdapter:
         """
         url = self.host + endpoint
         log_line_pre = f"method={method}, url={url}, parameters={parameters}"
-        log_line_post = ', '.join((log_line_pre, "success={}, status_code={}, message={}"))
+        log_line_post = "{}, success={}, status_code={}, message={}"
         try:
             self._logger.debug(msg=log_line_pre)
             response = self._session.request(method=method, url=url, verify=self._ssl_verify, params=parameters, json=data)
@@ -50,10 +50,10 @@ class RestAdapter:
             else:
                 data_out = None
         except (ValueError, requests.exceptions.JSONDecodeError) as e:
-            self._logger.error(msg=log_line_post.format(False, None, e))
+            self._logger.error(msg=log_line_post.format(log_line_pre, False, None, e))
             raise GraylogApiException("Bad JSON in response") from e
         is_success = 299 >= response.status_code >= 200  # OK
-        log_line = log_line_post.format(is_success, response.status_code, response.reason)
+        log_line = log_line_post.format(log_line_pre, is_success, response.status_code, response.reason)
         if is_success:
             self._logger.debug(msg=log_line)
             return GraylogApiResult(status_code=response.status_code, message=response.reason, data=data_out)

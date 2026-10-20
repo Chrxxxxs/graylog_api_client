@@ -1,4 +1,8 @@
 ### Currently Implemented Endpoints:
+- [x] -> fully implemented
+- [p] -> partly implemented
+- [/] -> no request of that type exists for that endpoint
+- [ ] -> not implemented
 #### Get-Requests:
 - [x] /authz Authorization
 - [x] /ca Certificate Authority
@@ -23,6 +27,7 @@
 - [ ] /migration
 - [ ] /system/pipelines Pipelines
 - [ ] /plugins Way more in Enterprise than open-core
+- [p] /plugins/SecurityApp/Assets
 - [ ] /remote-reindex-migration
 - [ ] /roles
 - [ ] /saml Enterprise only
@@ -64,6 +69,7 @@
 - [ ] /migration
 - [ ] /system/pipelines Pipelines
 - [ ] /plugins
+- [p] /plugins/SecurityApp/Assets
 - [ ] /remote-reindex-migration
 - [ ] /roles
 - [ ] /views/search Search
@@ -104,6 +110,7 @@
 - [ ] /migration
 - [ ] /system/pipelines Pipelines
 - [ ] /plugins
+- [x] /plugins/SecurityApp/Assets
 - [ ] /remote-reindex-migration
 - [ ] /roles
 - [ ] /views/search Search
@@ -144,6 +151,7 @@
 - [ ] /migration
 - [ ] /system/pipelines Pipelines
 - [ ] /plugins
+- [x] /plugins/SecurityApp/Assets
 - [ ] /remote-reindex-migration
 - [ ] /roles
 - [ ] /views/search Search
