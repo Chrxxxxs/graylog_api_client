@@ -1,6 +1,6 @@
 [project]
 name = "graylog-api-client"
-version = "0.2.0"
+version = "0.2.1"
 description = "A Python wrapper for the Graylog REST API"
 authors = [
     {name = "Chrxxxxs",email = "134285960+Chrxxxxs@users.noreply.github.com"}
