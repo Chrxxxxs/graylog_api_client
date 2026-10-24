@@ -1,7 +1,7 @@
 ### This is a low level Graylog API Wrapper heavily based on the guide by [pretzel](https://www.pretzellogix.net/2021/12/08/how-to-write-a-python3-sdk-library-module-for-a-json-rest-api/).
 As there are a lot of endpoints not all of them are implemented by now. I started by implementing the GET requests first.
 Also the API responses all follow very different schemas and an implementation of that into Python is probably not worth the effort which is why the responses from this API are so low-level.
-Feel free to add endpoints or schemas in PRs if you need them :)
+Due to the amount of Endpoints and the frequent changes, this project does not aim to implement all of them. Instead, only the ones that are needed are added. If some are missing that you need, create an issue or PR. When adding calls to a new Endpoint, follow the schema that is already used (e.g. all authz calls are located in [endpoints.authz.py](/src/graylog_api_client/endpoints/authz.py)).
 #### Last tested Graylog Major Version is: 7
 
 ### Example Usage
@@ -16,11 +16,12 @@ api = GraylogAPI(
     ssl_verify=True                   # /path/to/cert for custom certificate
 )
 
-# Example: Fetch all streams
-streams = api.get_streams()
+# Example: Fetch users
+users = api.users.get_users_paginated({"sort": "username"})
 
 # Print the result
-print("Streams:", streams.data)
+for user in users.data.get("users", []):
+    print(f"Username: {user['username']}, Email: {user['email']}, id: {user['id']}")
 ```
 
 Planned:

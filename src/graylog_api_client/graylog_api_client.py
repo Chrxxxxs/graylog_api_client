@@ -1,15 +1,14 @@
 import logging
-from datetime import datetime
-from typing import List, Literal, Union, Dict
+from typing import Literal
+from warnings import deprecated
 
 from .rest_adapter import RestAdapter
 from .data_structures import GraylogApiResult
-from .endpoints.authz import Endpoint_AUTH
-from .endpoints.plugins import Plugins
+from .endpoints import Plugins, Endpoint_AUTH, Endpoint_SEARCH, Endpoint_USER, Endpoint_VIEWS
 
 
 class GraylogAPI:
-    def __init__(self, host: str, api_key: str, ssl_verify: Union[str, bool] = True, logger: logging.Logger = None):
+    def __init__(self, host: str, api_key: str, ssl_verify: str | bool = True, logger: logging.Logger | None = None):
         """GraylogAPI client
 
         :param host: The hostname of the Graylog API endpoint plus the protocol. Example: https://graylog.com/api
@@ -18,163 +17,107 @@ class GraylogAPI:
         :param logger: The logger being used by the Adapter, will use a new one if none is given, defaults to None
         """
         self._rest_adapter = RestAdapter(host=host, api_key=api_key, ssl_verify=ssl_verify, logger=logger)
-        self.authz = Endpoint_AUTH(rest_adapter=self._rest_adapter)
         self.plugins = Plugins(rest_adapter=self._rest_adapter)
+        self.authz = Endpoint_AUTH(rest_adapter=self._rest_adapter)
+        self.users = Endpoint_USER(rest_adapter=self._rest_adapter)
+        self.views = Endpoint_VIEWS(rest_adapter=self._rest_adapter)
+        self.search = Endpoint_SEARCH(rest_adapter=self._rest_adapter)
 
     # The endpoints grouped like they are in the api-browser
     # /authz Authorization
+    @deprecated("This method is deprecated and will be removed in a future version. Use the 'authz' attribute instead.")
     def get_auth_grants_overview(self) -> GraylogApiResult:
         overview = self.authz.get_grants_overview()
         return overview
 
-    def get_auth_roles(self, parameters: Dict = None) -> GraylogApiResult:
+    @deprecated("This method is deprecated and will be removed in a future version. Use the 'authz' attribute instead.")
+    def get_auth_roles(self, parameters: dict | None = None) -> GraylogApiResult:
         roles = self.authz.get_roles(parameters)
         return roles
 
-    def get_auth_roles_of_user(self, username: str, parameters: Dict = None) -> GraylogApiResult:
+    @deprecated("This method is deprecated and will be removed in a future version. Use the 'authz' attribute instead.")
+    def get_auth_roles_of_user(self, username: str, parameters: dict | None = None) -> GraylogApiResult:
         roles = self.authz.get_roles_of_user(username, parameters)
         return roles
 
+    @deprecated("This method is deprecated and will be removed in a future version. Use the 'authz' attribute instead.")
     def get_auth_role_by_id(self, role_id: str) -> GraylogApiResult:
         roles = self.authz.get_role_by_id(role_id)
         return roles
 
-    def get_auth_assignees_of_role(self, role_id: str, parameters: Dict = None) -> GraylogApiResult:
+    @deprecated("This method is deprecated and will be removed in a future version. Use the 'authz' attribute instead.")
+    def get_auth_assignees_of_role(self, role_id: str, parameters: dict | None = None) -> GraylogApiResult:
         assignees = self.authz.get_assignees_of_role(role_id, parameters)
         return assignees
 
-    # /ca
-    def get_ca(self) -> GraylogApiResult:
-        result = self._rest_adapter.get("ca")
-        return result
-
-    # /certificates
-    def get_certificates(self) -> GraylogApiResult:
-        result = self._rest_adapter.get("certificates")
-        return result
-
-    # /cluster
-    def get_cluster(self) -> GraylogApiResult:
-        result = self._rest_adapter.get("cluster")
-        return result
-
-    def get_processbufferdump(self, node_id: str = "") -> GraylogApiResult:
-        result = self._rest_adapter.get(f"cluster/{node_id}/processbufferdump".replace("//", "/"))
-        return result
-
-    def get_jvminfo(self, node_id: str) -> GraylogApiResult:
-        result = self._rest_adapter.get(f"cluster/{node_id}/jvm")
-        return result
-
-    # /contentstream
-    # /dashboards
-    # /datanodes
-    # /datanode
-    # /api-docs API-Documentation
-    # /enterprise
-    # /entitylists
-    # /entity_scopes
-    # /entity_suggestions
-    # /events
-    # /system/inputs/{inputId}/extractors Extractors
-    # /favorites
-    # /views/fields FieldTypes
-    # /system/indexer Indexer
-    # /search/universal/absolute Legacy Message Search
-    # /messages
-    # /migration
-    # /system/pipelines Pipelines
-    # /plugins
-    # /remote-reindex-migration
-    # /roles
-    # /views/search Search
     # /search Search Options (Decorators, Export, Functions etc.)
-    def post_search_query(self, query: str, start: int, timerange: dict, streams: list[str], stream_categories: list[str] = None,\
-                          sort: str = None, sort_order: Literal["Ascending", "Descending"] = None,\
-                          fields: list[str] = None, size: int = 50) -> GraylogApiResult:
+    @deprecated("This method is deprecated and will be removed in a future version. Use the 'search' attribute instead.")
+    def post_search_query(self, query: str, start: int, timerange: dict, streams: list[str], stream_categories: list[str] | None = None,
+                          sort: str | None = None, sort_order: Literal["Ascending", "Descending"] | None = None,
+                          fields: list[str] | None = None, size: int = 50) -> GraylogApiResult:
         """start replaces the "from" parameter in the API"""
-        data = {
-            "query": query,
-            "from": str(start),
-            "timerange": timerange,
-            "streams": streams,
-            "stream_categories": stream_categories,
-            "sort": sort,
-            "sort_order": sort_order,
-            "fields": fields,
-            "size": str(size),
-        }
-        result = self._rest_adapter.post("search/messages", data=data)
+        result = self.search.post_search_query(query, start, timerange, streams, stream_categories, sort, sort_order, fields, size)
         return result
-    
-    # /views/searchjobs Searchjobs
-    # /sidecars
-    # /sidecar
-    # /startpage
-    # /system/inputs/{inputId}/staticfields Staticfields
+
     # /streams
+    @deprecated("This method is deprecated by Graylog and will not work with future Graylog versions")
     def get_streams(self) -> GraylogApiResult:
         result = self._rest_adapter.get("streams")
         return result
 
-    # /system Main System endpoints
-    # /telemetry
-    # /token_usage
     # /users
-    def create_user(self, username: str, first_name: str, last_name: str, email: str, password: str, permissions: List[str], data: Dict = None) -> GraylogApiResult:
-        user_data = {
-            "username": username,
-            "first_name": first_name,
-            "last_name": last_name,
-            "email": email,
-            "password": password,
-        }
-        if permissions:
-            user_data["permissions"] = permissions
-        if data:
-            user_data.update(data)
-        result = self._rest_adapter.post("users", data=user_data)
+    @deprecated("This method is deprecated and will be removed in a future version. Use the 'users' attribute instead.")
+    def create_user(self, username: str, first_name: str, last_name: str, email: str, password: str, permissions: list[str], data: dict | None = None) -> GraylogApiResult:
+        result = self.users.create_user(username, first_name, last_name, email, password, permissions, data)
         return result
 
-    def get_users(self, parameters: Dict = None) -> GraylogApiResult:
-        result = self._rest_adapter.get("users", parameters)
+    @deprecated("This method is deprecated and will be removed in a future version. Use the 'users' attribute instead.")
+    def get_users(self, parameters: dict | None = None) -> GraylogApiResult:
+        result = self.users.get_users(parameters)
         return result
 
-    def get_users_paginated(self, parameters: Dict = None) -> GraylogApiResult:
-        result = self._rest_adapter.get("users/paginated", parameters)
+    @deprecated("This method is deprecated and will be removed in a future version. Use the 'users' attribute instead.")
+    def get_users_paginated(self, parameters: dict | None = None) -> GraylogApiResult:
+        result = self.users.get_users_paginated(parameters)
         return result
 
+    @deprecated("This method is deprecated and will be removed in a future version. Use the 'users' attribute instead.")
     def get_user_by_id(self, user_id: str) -> GraylogApiResult:
-        result = self._rest_adapter.get(f"users/id/{user_id}")
+        result = self.users.get_user_by_id(user_id)
         return result
 
+    @deprecated("This method is deprecated and will be removed in a future version. Use the 'users' attribute instead.")
     def get_user_by_username(self, username: str) -> GraylogApiResult:
-        result = self._rest_adapter.get(f"users/{username}")
+        result = self.users.get_user_by_username(username)
         return result
 
+    @deprecated("This method is deprecated and will be removed in a future version. Use the 'users' attribute instead.")
     def get_user_tokens_by_id(self, user_id: str) -> GraylogApiResult:
-        result = self._rest_adapter.get(f"users/{user_id}/tokens")
+        result = self.users.get_user_tokens_by_id(user_id)
         return result
 
+    @deprecated("This method is deprecated and will be removed in a future version. Use the 'users' attribute instead.")
     def delete_user_by_id(self, user_id: str) -> GraylogApiResult:
-        result = self._rest_adapter.delete(f"users/id/{user_id}")
+        result = self.users.delete_user_by_id(user_id)
         return result
 
+    @deprecated("This method is deprecated and will be removed in a future version. Use the 'users' attribute instead.")
     def delete_user_by_username(self, username: str) -> GraylogApiResult:
-        result = self._rest_adapter.delete(f"users/{username}")
+        result = self.users.delete_user_by_username(username)
         return result
 
+    @deprecated("This method is deprecated and will be removed in a future version. Use the 'users' attribute instead.")
     def change_user_status(self, user_id: str, status: str) -> GraylogApiResult:
-        if status not in ["enabled", "disabled", "deleted"]:
-            raise ValueError(f"Status must be either 'enabled', 'disabled' or 'deleted' but was: {status}")
-        result = self._rest_adapter.put(f"users/{user_id}/status/{status}")
+        result = self.users.change_user_status(user_id, status)
         return result
 
     # /views Main Views Endpoints
-    def get_views(self, parameters: Dict = None) -> GraylogApiResult:
-        result = self._rest_adapter.get("views", parameters)
+    @deprecated("This method is deprecated and will be removed in a future version. Use the 'views' attribute instead.")
+    def get_views(self, parameters: dict | None = None) -> GraylogApiResult:
+        result = self.views.get_views(parameters)
         return result
 
+    @deprecated("This method is deprecated and will be removed in a future version. Use the 'views' attribute instead.")
     def get_view_by_id(self, view_id: str) -> GraylogApiResult:
-        result = self._rest_adapter.get(f"views/{view_id}")
+        result = self.views.get_view_by_id(view_id)
         return result
